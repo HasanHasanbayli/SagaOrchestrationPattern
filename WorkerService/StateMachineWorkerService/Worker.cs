@@ -11,8 +11,8 @@ public class Worker : BackgroundService
 
     public override Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Worker started at: {time}", DateTimeOffset.Now);
-        
+        _logger.LogInformation(message: "Worker started at: {time}", DateTimeOffset.Now);
+
         return base.StartAsync(cancellationToken);
     }
 
@@ -20,16 +20,16 @@ public class Worker : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-            
+            _logger.LogInformation(message: "Worker running at: {time}", DateTimeOffset.Now);
+
             await Task.Delay(1000, stoppingToken);
         }
     }
 
     public override Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Worker stopped at: {time}", DateTimeOffset.Now);
-        
+        _logger.LogInformation(message: "Worker stopped at: {time}", DateTimeOffset.Now);
+
         return base.StopAsync(cancellationToken);
     }
 }

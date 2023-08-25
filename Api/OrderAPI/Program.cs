@@ -1,11 +1,29 @@
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+using MassTransit;
+using Microsoft.EntityFrameworkCore;
+using OrderAPI.Context;
 
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+IServiceCollection services = builder.Services;
+IConfiguration configuration = builder.Configuration;
 // Add services to the container.
 
-builder.Services.AddControllers();
+services.AddControllers();
+
+services.AddDbContext<ApplicationDbContext>(optionsBuilder =>
+    optionsBuilder.UseSqlServer(configuration.GetConnectionString(name: "SqlConnection"))
+);
+
+services.AddMassTransit(configure =>
+{
+    configure.UsingRabbitMq(configure: (context, cfg) =>
+    {
+        cfg.Host(configuration.GetConnectionString(name: "RabbitMQConnection"));
+    });
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
 
 WebApplication app = builder.Build();
 

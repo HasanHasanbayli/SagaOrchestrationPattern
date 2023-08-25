@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WorkerService", "WorkerServ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StateMachineWorkerService", "WorkerService\StateMachineWorkerService\StateMachineWorkerService.csproj", "{30D01D97-A8E0-45F7-9EAC-F4988184E3D0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{4A0B5705-3126-4E1C-9B74-61B6E2758FDE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,10 @@ Global
 		{30D01D97-A8E0-45F7-9EAC-F4988184E3D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30D01D97-A8E0-45F7-9EAC-F4988184E3D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30D01D97-A8E0-45F7-9EAC-F4988184E3D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A0B5705-3126-4E1C-9B74-61B6E2758FDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A0B5705-3126-4E1C-9B74-61B6E2758FDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A0B5705-3126-4E1C-9B74-61B6E2758FDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A0B5705-3126-4E1C-9B74-61B6E2758FDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5C401086-79CC-44BC-AE34-C4E6EDC7AE80} = {AF0D7D2D-55D1-4663-88B1-14551CB27DAD}

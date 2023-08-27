@@ -10,16 +10,16 @@ IConfiguration configuration = builder.Configuration;
 services.AddControllers();
 
 services.AddDbContext<ApplicationDbContext>(optionsBuilder =>
-    optionsBuilder.UseSqlServer(configuration.GetConnectionString(name: "SqlConnection"))
+    optionsBuilder.UseNpgsql(configuration.GetConnectionString(name: "SqlConnection"))
 );
 
-services.AddMassTransit(configure =>
-{
-    configure.UsingRabbitMq(configure: (context, cfg) =>
-    {
-        cfg.Host(configuration.GetConnectionString(name: "RabbitMQConnection"));
-    });
-});
+// services.AddMassTransit(configure =>
+// {
+    // configure.UsingRabbitMq(configure: (context, cfg) =>
+    // {
+        // cfg.Host(configuration.GetConnectionString(name: "RabbitMQConnection"));
+    // });
+// });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();

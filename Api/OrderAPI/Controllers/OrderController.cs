@@ -53,6 +53,8 @@ public class OrderController : ControllerBase
 
         await _context.SaveChangesAsync();
 
+        decimal totalPrice = newOrder.Items.Sum(orderItem => orderItem.Price * orderItem.Count);
+
         OrderCreatedRequestEvent orderCreatedRequestEvent = new()
         {
             BuyerId = orderCreateDto.BuyerId,
@@ -63,7 +65,7 @@ public class OrderController : ControllerBase
                 CardNumber = orderCreateDto.Payment.CardNumber,
                 Expiration = orderCreateDto.Payment.Expiration,
                 Cvv = orderCreateDto.Payment.Cvv,
-                TotalPrice = orderCreateDto.OrderItem.Sum(orderItemDto => orderItemDto.Price * orderItemDto.Count)
+                TotalPrice = totalPrice
             }
         };
 
@@ -77,10 +79,10 @@ public class OrderController : ControllerBase
         });
 
         ISendEndpoint sendEndpoint = await _sendEndpointProvider.GetSendEndpoint(
-            address: new Uri($"queue:{RabbitMqSettingsConst.OrderSagaQueue}"));
+        address: new Uri($"queue:{RabbitMqSettingsConst.OrderSagaQueue}"));
 
         await sendEndpoint.Send<IOrderCreatedRequestEvent>(orderCreatedRequestEvent);
-        
+
         return Ok();
     }
 }

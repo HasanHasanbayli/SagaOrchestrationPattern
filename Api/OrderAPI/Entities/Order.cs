@@ -8,7 +8,7 @@ public class Order
     public DateTime CreatedDate { get; set; }
     public Guid BuyerId { get; set; }
     public Address Address { get; set; } = null!;
-    public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
     public OrderStatus Status { get; set; }
     public string? FailMessage { get; set; }
+    public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
 }

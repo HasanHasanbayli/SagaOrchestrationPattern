@@ -28,6 +28,7 @@ public class OrderStateInstance : SagaStateMachineInstance
         {
             sb.Append($"{p.Name}: {p.GetValue(this)}\n");
         });
+        
         sb.Append('\n');
         
         return sb.ToString();

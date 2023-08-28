@@ -6,9 +6,9 @@ using StateMachineWorkerService.Models;
 
 IHost host = Host.CreateDefaultBuilder(args).ConfigureServices((hostContext, services) =>
 {
-    services.AddMassTransit(cfg =>
+    services.AddMassTransit(x =>
     {
-        cfg.AddSagaStateMachine<OrderStateMachine, OrderStateInstance>().EntityFrameworkRepository(opt =>
+        x.AddSagaStateMachine<OrderStateMachine, OrderStateInstance>().EntityFrameworkRepository(opt =>
             opt.AddDbContext<DbContext, OrderStateDbContext>((provider, builder) =>
             {
                 builder.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection"), m =>
@@ -17,7 +17,7 @@ IHost host = Host.CreateDefaultBuilder(args).ConfigureServices((hostContext, ser
                     });
             }));
 
-        cfg.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(configure =>
+        x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(configure =>
         {
             configure.Host(hostContext.Configuration.GetConnectionString("RabbitMQ"));
 
@@ -26,9 +26,21 @@ IHost host = Host.CreateDefaultBuilder(args).ConfigureServices((hostContext, ser
                     endpoint.ConfigureSaga<OrderStateInstance>(provider);
                 });
         }));
+        
+        x.UsingRabbitMq((context, cfg) =>
+        {
+            cfg.Host(hostContext.Configuration.GetConnectionString("RabbitMQ"));
+            
+            cfg.ReceiveEndpoint(RabbitMqSettingsConst.OrderSagaQueue, endpoint =>
+            {
+                endpoint.ConfigureSaga<OrderStateInstance>(context);
+            });
+
+        });
     });
 
     services.AddHostedService<Worker>();
+    
 }).Build();
 
 host.Run();

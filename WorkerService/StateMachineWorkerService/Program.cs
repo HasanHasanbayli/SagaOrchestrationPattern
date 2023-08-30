@@ -1,7 +1,6 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Shared;
-using StateMachineWorkerService;
 using StateMachineWorkerService.Models;
 
 IHost host = Host.CreateDefaultBuilder(args).ConfigureServices((hostContext, services) =>
@@ -11,35 +10,36 @@ IHost host = Host.CreateDefaultBuilder(args).ConfigureServices((hostContext, ser
         x.AddSagaStateMachine<OrderStateMachine, OrderStateInstance>().EntityFrameworkRepository(opt =>
             opt.AddDbContext<DbContext, OrderStateDbContext>((_, builder) =>
             {
-                builder.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection"), m =>
+                builder.UseNpgsql(hostContext.Configuration.GetConnectionString("WorkerServiceConnection"), 
+                    m =>
                     {
                         m.MigrationsAssembly(typeof(OrderStateDbContext).Assembly.GetName().Name);
                     });
             }));
 
-        // x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(configure =>
-        // {
-        //     configure.Host(hostContext.Configuration.GetConnectionString("RabbitMQ"));
-        //
-        //     configure.ReceiveEndpoint(RabbitMqSettingsConst.OrderSagaQueue, endpoint =>
-        //         {
-        //             endpoint.ConfigureSaga<OrderStateInstance>(provider);
-        //         });
-        // }));
-        
-        x.UsingRabbitMq((context, cfg) =>
+        x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(configure =>
         {
-            cfg.Host(hostContext.Configuration.GetConnectionString("RabbitMQ"));
+            configure.Host(hostContext.Configuration.GetConnectionString("RabbitMQConnection"));
+        
+            configure.ReceiveEndpoint(RabbitMqSettingsConst.OrderSagaQueue, endpoint =>
+                {
+                    endpoint.ConfigureSaga<OrderStateInstance>(provider);
+                });
+        }));
+        
+        // x.UsingRabbitMq((context, cfg) =>
+        // {
+            // cfg.Host(hostContext.Configuration.GetConnectionString("RabbitMQ"));
             
-            cfg.ReceiveEndpoint(RabbitMqSettingsConst.OrderSagaQueue, endpoint =>
-            {
-                endpoint.ConfigureSaga<OrderStateInstance>(context);
-            });
+            // cfg.ReceiveEndpoint(RabbitMqSettingsConst.OrderSagaQueue, endpoint =>
+            // {
+                // endpoint.ConfigureSaga<OrderStateInstance>(context);
+            // });
 
-        });
+        // });
     });
 
-    services.AddHostedService<Worker>();
+    // services.AddHostedService<Worker>();
     
 }).Build();
 

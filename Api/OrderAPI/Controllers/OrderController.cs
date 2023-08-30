@@ -36,7 +36,7 @@ public class OrderController : ControllerBase
                 Province = orderCreateDto.Address.Province,
                 District = orderCreateDto.Address.District
             },
-            CreatedDate = DateTime.Now
+            CreatedDate = DateTime.UtcNow
         };
 
         orderCreateDto.OrderItem.ForEach(dto =>

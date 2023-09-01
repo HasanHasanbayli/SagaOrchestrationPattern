@@ -9,8 +9,8 @@ public class Worker : BackgroundService
         _logger = logger;
     }
 
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        throw new NotImplementedException();
+        // throw new NotImplementedException();
     }
 }

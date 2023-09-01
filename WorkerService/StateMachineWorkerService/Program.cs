@@ -1,6 +1,7 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Shared;
+using StateMachineWorkerService;
 using StateMachineWorkerService.Models;
 
 IHost host = Host.CreateDefaultBuilder(args).ConfigureServices((hostContext, services) =>
@@ -10,6 +11,9 @@ IHost host = Host.CreateDefaultBuilder(args).ConfigureServices((hostContext, ser
         x.AddSagaStateMachine<OrderStateMachine, OrderStateInstance>().EntityFrameworkRepository(opt =>
             opt.AddDbContext<DbContext, OrderStateDbContext>((_, builder) =>
             {
+                // Add this line before configuring your DbContext
+                builder.UseLoggerFactory(LoggerFactory.Create(builder2 => builder2.AddConsole()));
+
                 builder.UseNpgsql(hostContext.Configuration.GetConnectionString("WorkerServiceConnection"), 
                     m =>
                     {
@@ -21,7 +25,7 @@ IHost host = Host.CreateDefaultBuilder(args).ConfigureServices((hostContext, ser
         {
             configure.Host(hostContext.Configuration.GetConnectionString("RabbitMQConnection"));
         
-            configure.ReceiveEndpoint(RabbitMqSettingsConst.OrderSagaQueue, endpoint =>
+            configure.ReceiveEndpoint(RabbitMqSettingsConst.OrderSaga, endpoint =>
                 {
                     endpoint.ConfigureSaga<OrderStateInstance>(provider);
                 });
@@ -39,7 +43,7 @@ IHost host = Host.CreateDefaultBuilder(args).ConfigureServices((hostContext, ser
         // });
     });
 
-    // services.AddHostedService<Worker>();
+    services.AddHostedService<Worker>();
     
 }).Build();
 

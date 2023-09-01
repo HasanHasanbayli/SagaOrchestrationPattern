@@ -3,15 +3,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace StateMachineWorkerService.Models;
 
-public class OrderStateDbContext : SagaDbContext
+public class  OrderStateDbContext : SagaDbContext
 {
     public OrderStateDbContext(DbContextOptions<OrderStateDbContext> options)
         : base(options)
     {
     }
 
-    protected override IEnumerable<ISagaClassMap> Configurations => new ISagaClassMap[]
+    protected override IEnumerable<ISagaClassMap> Configurations
     {
-        new OrderStateMap()
-    };
+        get { yield return new OrderStateMap(); }
+    }
 }

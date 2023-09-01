@@ -15,7 +15,7 @@ services.AddDbContext<ApplicationDbContext>(optionsBuilder =>
 
 services.AddMassTransit(configure =>
 {
-    configure.UsingRabbitMq(configure: (context, cfg) =>
+    configure.UsingRabbitMq(configure: (_, cfg) =>
     {
         cfg.Host(configuration.GetConnectionString(name: "RabbitMQConnection"));
     });
@@ -31,7 +31,11 @@ WebApplication app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Web API");
+        options.RoutePrefix = string.Empty;
+    });
 }
 
 app.UseHttpsRedirection();

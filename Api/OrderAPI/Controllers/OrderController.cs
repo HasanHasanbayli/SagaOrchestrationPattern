@@ -38,7 +38,7 @@ public class OrderController : ControllerBase
             },
             CreatedDate = DateTime.UtcNow
         };
-
+  
         orderCreateDto.OrderItem.ForEach(dto =>
         {
             newOrder.Items.Add(new OrderItem
@@ -79,7 +79,7 @@ public class OrderController : ControllerBase
         });
 
         ISendEndpoint sendEndpoint = await _sendEndpointProvider.GetSendEndpoint(
-        address: new Uri($"queue:{RabbitMqSettingsConst.OrderSagaQueue}"));
+        address: new Uri($"queue:{RabbitMqSettingsConst.OrderSaga}"));
 
         await sendEndpoint.Send<IOrderCreatedRequestEvent>(orderCreatedRequestEvent);
 
